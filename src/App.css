@@ -1,38 +1,128 @@
 .App {
   text-align: center;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 50px auto;
+  background-color:#fff;
+  border-radius: 20px;
+}
+body{
+background-color: #8a8ad3;
+  font-family:Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+button{
+   padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #2ecc71;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background-color 0.3s ease;
+}
+button:hover {
+  background-color: #27ae60;
+}
+.chart-container{
+width: 400px;
+height: 400px;
+  background: #c2bebe;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  max-width: 600px;
+
+}
+h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+input[type="file"] {
+  display: none; 
+}
+.custom-file-upload {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #3498db;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.custom-file-upload:hover {
+  background-color: #2980b9;
+}
+.results {
+  margin-top: 30px;
+}
+.result {
+  background: #fff;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.result:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.result.positive {
+  border-left: 5px solid #36A2EB;
+}
+
+.result.negative {
+  border-left: 5px solid #FF6384;
+}
+
+.result.neutral {
+  border-left: 5px solid #FFCE56;
+}
+
+.result p {
+  margin: 5px 0;
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .chart-container {
+    padding: 15px;
+  }
+
+  button {
+    width: 100%;
+    margin: 5px 0;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
+/* Animations */
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
+}
+
+.results {
+  animation: fadeIn 0.5s ease-in-out;
 }
