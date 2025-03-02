@@ -73,28 +73,56 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Sentiment Analysis of Social Media Data</h1>
-      <label htmlFor="file-upload" className="custom-file-upload">
-        Upload CSV File
-      </label>
-      <input id="file-upload" type="file" accept=".csv" onChange={handleFileChange} />
-      <br />
-      <button className="btn" onClick={handleAnalyze} disabled = {loading}>
-        {loading ? "analyzing..." : "Analyze Sentiment"}
-      </button>
-      <button className="btn2" onClick={handleGeneratePieChart} disabled = {generate}>
+      <nav className="navbar">
+        <div className="navbar-brand"> Sentiment Analysis</div>
+        <ul className="navbar-links">
+          <li>
+            {" "}
+            <a href="#home">Home</a>
+          </li>
+          <li>
+            {" "}
+            <a href="#Analyze">Analyze</a>
+          </li>
+          <li>
+            {" "}
+            <a href="#Results">results</a>
+          </li>
+        </ul>
+      </nav>
+      <section id="home" className="landing-section">
+        <h1>Sentiment Analysis of Social Media Data</h1>
+        <p>Upload a csv file to analyze sentiment of social media comments</p>
+      </section>
+      <section id="Analyze" className="analyze-section">
+        <label htmlFor="file-upload" className="custom-file-upload">
+          Upload CSV File
+        </label>
+        <input
+          id="file-upload"
+          type="file"
+          accept=".csv"
+          onChange={handleFileChange}
+        />
+        <br />
+        <button className="btn" onClick={handleAnalyze} disabled={loading}>
+          {loading ? "analyzing..." : "Analyze Sentiment"}
+        </button>
+      </section>
+      <section id='Results' className="results-section">
+        <h2> Sentiment distribution</h2>
+        <div className="sentiment-counts">
+          <p><strong>Positive:</strong> {sentimentCounts.positive}</p>
+          <p><strong>Negative:</strong> {sentimentCounts.negative}</p>
+          <p><strong>Neutral:</strong> {sentimentCounts.neutral}</p>
+        </div>
+      <button
+        className="btn2"
+        onClick={handleGeneratePieChart}
+        disabled={generate}
+      >
         {generate ? "generating..." : "Generate Pie Chart"}
       </button>
-
-      {(loading || generate) && (
-        <div className="loading-spinner">
-          <div className="spinner"></div>
-          <p>Loading...</p>
-        </div>
-      )}
-
-      <div className="results">
-        <h2>Sentiment Distribution:</h2>
         {pieChartData && (
           <div className="chart-container">
             <Pie data={pieChartData} />
@@ -112,7 +140,13 @@ function App() {
             </p>
           </div>
         ))}
-      </div>
+        </section>
+      {(loading || generate) && (
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Loading...</p>
+        </div>
+      )}
     </div>
   );
 }
