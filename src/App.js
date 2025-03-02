@@ -13,6 +13,8 @@ function App() {
     neutral: 0,
   });
   const [pieChartData, setPieChartData] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const [generate, setGenerate] = useState(false)
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -24,6 +26,7 @@ function App() {
       return;
     }
 
+    setLoading(true)
     const formData = new FormData();
     formData.append("file", file);
 
@@ -46,10 +49,13 @@ function App() {
     } catch (error) {
       console.error("Error analyzing the file:", error);
       alert("An error occurred while analyzing the file. Please try again.");
+    } finally {
+      setLoading(false)
     }
   };
 
   const handleGeneratePieChart = async () => {
+    setGenerate(true)
     try {
       const response = await axios.get(
         "https://sentiment-5-zes6.onrender.com/generate-pie-chart/"
@@ -60,10 +66,10 @@ function App() {
       alert(
         "An error occurred while generating the pie chart. Please analyze a CSV file first."
       );
+    } finally{
+      setGenerate(false)
     }
   };
-
-
 
   return (
     <div className="App">
@@ -73,12 +79,20 @@ function App() {
       </label>
       <input id="file-upload" type="file" accept=".csv" onChange={handleFileChange} />
       <br />
-      <button className="btn" onClick={handleAnalyze}>
-        Analyze Sentiment
+      <button className="btn" onClick={handleAnalyze} disabled = {loading}>
+        {loading ? "analyzing..." : "Analyze Sentiment"}
       </button>
-      <button className="btn2" onClick={handleGeneratePieChart}>
-        Generate Pie Chart
+      <button className="btn2" onClick={handleGeneratePieChart} disabled = {generate}>
+        {generate ? "generating..." : "Generate Pie Chart"}
       </button>
+
+      {(loading || generate) && (
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Loading...</p>
+        </div>
+      )}
+
       <div className="results">
         <h2>Sentiment Distribution:</h2>
         {pieChartData && (
