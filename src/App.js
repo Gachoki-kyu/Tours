@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import "./App.css";
 import "chart.js/auto";
+import WordCloud from "wordcloud";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -13,8 +14,13 @@ function App() {
     neutral: 0,
   });
   const [pieChartData, setPieChartData] = useState(null);
+  const [wordcloud, setWordcloud] = useState([])
+
+  const wordcloudRef = useRef(null)
+
+const [generatewordcloud, setGeneratewordcloud] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [generate, setGenerate] = useState(false)
+  const [generatePie, setGeneratePie] = useState(false)
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -55,7 +61,7 @@ function App() {
   };
 
   const handleGeneratePieChart = async () => {
-    setGenerate(true)
+    setGeneratePie(true)
     try {
       const response = await axios.get(
         "https://sentiment-5-zes6.onrender.com/generate-pie-chart/"
@@ -67,10 +73,43 @@ function App() {
         "An error occurred while generating the pie chart. Please analyze a CSV file first."
       );
     } finally{
-      setGenerate(false)
+      setGeneratePie(false)
     }
   };
-
+  const handleGenerateWordcloud = async () => {
+    setGeneratewordcloud(true);
+    try {
+      const response = await axios.get('https://sentiment-5-zes6.onrender.com/generate-word-cloud/')
+      if (Array.isArray(response.data)) {
+        const data = response.data
+        const wordcloudlist = data.map(item => [item.text, item.value])
+        setWordcloud(wordcloudlist)
+        
+      } else {
+        console.error('Invalid wordcloud data received', response.data)
+      }
+    } catch (error) {
+      console.error('Error generating word cloud:', error)
+      alert('An error occurred while generating the word cloud. please analyze a CSV file first.')
+    } finally {
+      setGeneratewordcloud(false)
+    }
+  }
+  useEffect(() => {
+    if (wordcloud.length > 0 && wordcloudRef.current) {
+      WordCloud(wordcloudRef.current, {
+        list: wordcloud,
+        gripSize: 10,
+        weightFactor: 5,
+        fontFamily: 'Aerial',
+        color: 'random-light',
+        rotateRatio: 0.5,
+        ritationSteps: 2,
+        backgroundColor: '#f4f4f4',
+       })
+     }
+   }, [wordcloud])
+  
   return (
     <div className="App">
       <nav className="navbar">
@@ -119,19 +158,29 @@ function App() {
       <button
         className="btn2"
         onClick={handleGeneratePieChart}
-        disabled={generate}
+        disabled={generatePie}
       >
-        {generate ? "generating..." : "Generate Pie Chart"}
-      </button>
+        {generatePie ? "generating..." : "Generate Pie Chart"}
+        </button>
+        <button onClick={handleGenerateWordcloud} disabled={generatewordcloud}>
+          {generatewordcloud ? 'Generating word cloud...' : 'Generate Word Cloud'}
+        </button>
         {pieChartData && (
           <div className="chart-container">
             <Pie data={pieChartData} />
           </div>
         )}
+        <h2> Word Cloud </h2>
+        {wordcloud.length > 0 && (
+          <div className='word-cloud-container'
+            ref={wordcloudRef}
+            style={{width: '500px', height: '500px', margin: '0 auto'}}>
+          </div>
+        )}
 
         <h2>Results:</h2>
         {results.map((result, index) => (
-          <div key={index} className={`result ${result.sentiment}`}>
+          <div key={index} className={result ${result.sentiment}}>
             <p>
               <strong>Comment:</strong> {result.text}
             </p>
@@ -140,8 +189,8 @@ function App() {
             </p>
           </div>
         ))}
-        </section>
-      {(loading || generate) && (
+      </section>
+      {(loading || generatePie || generatewordcloud) && (
         <div className="loading-spinner">
           <div className="spinner"></div>
           <p>Loading...</p>
