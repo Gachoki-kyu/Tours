@@ -180,7 +180,7 @@ const [generatewordcloud, setGeneratewordcloud] = useState(false)
 
         <h2>Results:</h2>
         {results.map((result, index) => (
-          <div key={index} className={result ${result.sentiment}}>
+          <div key={index} className={`result ${result.sentiment}`}>
             <p>
               <strong>Comment:</strong> {result.text}
             </p>
